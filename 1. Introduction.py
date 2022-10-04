@@ -1,32 +1,4 @@
 # Databricks notebook source
-# MAGIC %md ---
-# MAGIC title: A/B testing with MLflow 1 - Introduction
-# MAGIC authors:
-# MAGIC -  Sergio Ballesteros
-# MAGIC tags:
-# MAGIC - machine-learning
-# MAGIC - python
-# MAGIC - pyspark
-# MAGIC - a/b testing
-# MAGIC - ab testing
-# MAGIC - binary-classifier
-# MAGIC - mllib
-# MAGIC - credit risk
-# MAGIC - loan risk
-# MAGIC - finance
-# MAGIC created_at: 2021-07-27
-# MAGIC updated_at: 2021-07-27
-# MAGIC tldr: Introduction to the A/B testing series of notebooks. This series of notebooks shows how to leverage Databricks with MLflow and Delta to do A/B testing on streaming data related to credit risk
-# MAGIC ---
-
-# COMMAND ----------
-
-# MAGIC %md
-# MAGIC # Notebook Links
-# MAGIC - AWS demo.cloud: [https://demo.cloud.databricks.com/#notebook/10781635/](https://demo.cloud.databricks.com/#notebook/10781635/)
-
-# COMMAND ----------
-
 # MAGIC %md
 # MAGIC # Introduction
 # MAGIC In any machine learning related project, training a model offline is just one part of the process. In 2020, we saw how the whole world quickly changed due to the pandemic. When working with data that represents the outside world is it important to keep in mind that models are going to have different accuracies over time because the data used for that training might no longer be representative, also known as model drift. Hence, it is important to track the real world accuracy over time. 
@@ -71,26 +43,24 @@
 
 # COMMAND ----------
 
-# OPTION1: download and that csv file and upload it to DBFS into the path as shown below, under databricks-datasets-private folder, then under ML folder etc.
-# permanent_table_name = "german_credit_data"
-
-# df = (
-#   spark
-#   .read
-#   .option("inferSchema", "true") 
-#   .option("header", "true") 
-#   .option("sep", ",") 
-#   .csv("/mnt/databricks-datasets-private/ML/credit-risk/german_credit_data.csv") 
-# )
-
-# df.write.format("delta").mode("overwrite").saveAsTable(permanent_table_name)
+# MAGIC %sh
+# MAGIC wget "https://raw.githubusercontent.com/sergioballesterossolanas/databricks-ab-testing/master/german_credit_data.csv" -O /dbfs/tmp/german_credit_data.csv
 
 # COMMAND ----------
 
-# DBTITLE 1,Option2: manually upload this csv data into your default database, with table name "german_credit_data"
 permanent_table_name = "german_credit_data"
-display(spark.read.table(permanent_table_name))
+
+df = (
+  spark
+  .read
+  .option("inferSchema", "true") 
+  .option("header", "true") 
+  .option("sep", ",") 
+  .csv("/tmp/german_credit_data.csv")
+)
+
+df.write.format("delta").mode("overwrite").saveAsTable(permanent_table_name)
 
 # COMMAND ----------
 
-
+display(df)
