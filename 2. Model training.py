@@ -1,29 +1,5 @@
 # Databricks notebook source
-# MAGIC %md ---
-# MAGIC title: A/B testing with MLflow 2 - Model training
-# MAGIC authors:
-# MAGIC -  Sergio Ballesteros
-# MAGIC tags:
-# MAGIC - machine-learning
-# MAGIC - python
-# MAGIC - pyspark
-# MAGIC - a/b testing
-# MAGIC - ab testing
-# MAGIC - binary-classifier
-# MAGIC - mllib
-# MAGIC - credit risk
-# MAGIC - loan risk
-# MAGIC - finance
-# MAGIC created_at: 2021-07-27
-# MAGIC updated_at: 2021-07-27
-# MAGIC tldr: Trains two machine learning models on a credit risk dataset. A/B testing will be done on these two notebooks with online inference.
-# MAGIC ---
-
-# COMMAND ----------
-
-# MAGIC %md
-# MAGIC # Notebook Links
-# MAGIC - AWS demo.cloud: [https://demo.cloud.databricks.com/#notebook/10781596](https://demo.cloud.databricks.com/#notebook/10781596)
+# MAGIC %pip install mlflow==1.29.0 pandas-profiling==3.3.0
 
 # COMMAND ----------
 
@@ -70,7 +46,12 @@ spark = (SparkSession.builder
 # Use MLflow to track experiments
 experiment_name = "german_credit_experiment"
 current_folder = "/".join(dbutils.notebook.entry_point.getDbutils().notebook().getContext().notebookPath().get().split("/")[:-1])
-mlflow.set_experiment("{}/{}".format(current_folder, experiment_name))
+#mlflow.set_experiment("{}/{}".format(current_folder, experiment_name))
+
+# COMMAND ----------
+
+# if "Repos" == current_folder.split("/")[1]:
+#   current_folder.replace("Repos", "")
 
 # COMMAND ----------
 

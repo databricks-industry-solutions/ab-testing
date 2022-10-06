@@ -1,32 +1,4 @@
 # Databricks notebook source
-# MAGIC %md ---
-# MAGIC title: A/B testing with MLflow 5 - A/B testing metrics
-# MAGIC authors:
-# MAGIC -  Sergio Ballesteros
-# MAGIC tags:
-# MAGIC - machine-learning
-# MAGIC - python
-# MAGIC - pyspark
-# MAGIC - a/b testing
-# MAGIC - ab testing
-# MAGIC - binary-classifier
-# MAGIC - mllib
-# MAGIC - credit risk
-# MAGIC - loan risk
-# MAGIC - finance
-# MAGIC created_at: 2021-07-27
-# MAGIC updated_at: 2021-07-27
-# MAGIC tldr: Calculates the metrics to measure the quality of predictions of the two ML models and checks for statistical significance. The results are displayed on Databricks SQL.
-# MAGIC ---
-
-# COMMAND ----------
-
-# MAGIC %md
-# MAGIC # Notebook Links
-# MAGIC - AWS demo.cloud: [https://demo.cloud.databricks.com/#notebook/10781615/](https://demo.cloud.databricks.com/#notebook/10781615/)
-
-# COMMAND ----------
-
 # MAGIC %md
 # MAGIC ## Computing metrics
 # MAGIC Great, now we have a table were we store the predictions and a table where we have the ground truth of the users who received predictions (we can assume that there is such a feedback loop).
@@ -95,8 +67,8 @@ df_gt = (
 df_metrics = (
   df_gt
   .join(df_pred, on="id", how="inner")
-  .withColumn("bucket", F.floor((F.col("timestamp") - df_pred.select(F.min("timestamp")).collect()[0][0])/60))
-  .groupby("group", "bucket")
+  .withColumn("date_time", F.from_unixtime("timestamp", "MM-dd-yyyy HH:mm"))
+  .groupby("group", "date_time")
   .agg(compute_metric("ground_truth", "prediction").alias("pr_auc"))
   .na
   .drop()
@@ -141,11 +113,6 @@ print("Test model A better than model B", a_better_b)
 # COMMAND ----------
 
 # MAGIC %md
-# MAGIC We can see that the p-values of our hypothesis are only 0.17 and 0.84. Typically the maximum p-value to accept a hypothesis would be 0.05, so we could say that no model is statistically significant superior
-
-# COMMAND ----------
-
-# MAGIC %md
 # MAGIC # Save metrics and tests to a Delta Table and visualize them with Databricks SQL
 
 # COMMAND ----------
@@ -164,8 +131,8 @@ else:
 
 # COMMAND ----------
 
-data = [(best_model,((spark.sql("select current_timestamp()")).collect()[0][0]),p_value),
-  ]
+data = [(best_model,((spark.sql("select current_timestamp()")).collect()[0][0]),p_value)]
+data
 
 # COMMAND ----------
 
@@ -174,6 +141,7 @@ df_pvalue  = spark.createDataFrame(data, T.StructType([
   T.StructField("timestamp", T.TimestampType()),
   T.StructField("pvalue", T.FloatType())]
 ))
+
 (
   df_pvalue
  .write
@@ -184,12 +152,23 @@ df_pvalue  = spark.createDataFrame(data, T.StructType([
 
 # COMMAND ----------
 
-df_metrics.write.mode("overwrite").format("delta").saveAsTable("risk_metrics")
+# MAGIC %sql
+# MAGIC DROP TABLE risk_metrics
+
+# COMMAND ----------
+
+(
+  df_metrics
+  .write
+  .mode("overwrite")
+  .format("delta")
+  .saveAsTable("risk_metrics")
+)
 
 # COMMAND ----------
 
 # MAGIC %md
-# MAGIC ### optional: create a dashboard on Databricks SQL 
+# MAGIC ### Optional: create a dashboard on Databricks SQL 
 # MAGIC 
 # MAGIC DB internal workspace link: https://e2-demo-west.cloud.databricks.com/sql/dashboards/02566bf1-3ecd-4d63-b3ba-b6ccf859a530-risk-demo
 # MAGIC 

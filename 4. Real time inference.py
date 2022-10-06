@@ -1,29 +1,5 @@
 # Databricks notebook source
-# MAGIC %md ---
-# MAGIC title: A/B testing with MLflow 4 - Real time inference
-# MAGIC authors:
-# MAGIC -  Sergio Ballesteros
-# MAGIC tags:
-# MAGIC - machine-learning
-# MAGIC - python
-# MAGIC - pyspark
-# MAGIC - a/b testing
-# MAGIC - ab testing
-# MAGIC - binary-classifier
-# MAGIC - mllib
-# MAGIC - credit risk
-# MAGIC - loan risk
-# MAGIC - finance
-# MAGIC created_at: 2021-07-27
-# MAGIC updated_at: 2021-07-27
-# MAGIC tldr: Loads two trained ML models and performs online inference on a stream of data coming from a Delta table. Predictions will be used for the A/B test.
-# MAGIC ---
-
-# COMMAND ----------
-
-# MAGIC %md
-# MAGIC # Notebook Links
-# MAGIC - AWS demo.cloud: [https://demo.cloud.databricks.com/#notebook/10781570](https://demo.cloud.databricks.com/#notebook/10781570)
+# MAGIC %pip install mlflow==1.29.0
 
 # COMMAND ----------
 
@@ -80,6 +56,7 @@ df = (
   .readStream
   .format("delta")
   .table("risk_stream_source")
+  .withColumn("timestamp", F.unix_timestamp(F.current_timestamp()))
 )
 
 display(df)
@@ -103,24 +80,32 @@ display(df)
 
 # MAGIC %md
 # MAGIC ## Divide the incoming credit requests into two equally sized groups: A and B
-# MAGIC We will use the ID of the request to make the split. Other logics would also work, for example with a random number generator we could choose a different split
+# MAGIC We will use a random number generator to make the split. 5% of the request will be made with model B and the remaining 95% with model A.
 
 # COMMAND ----------
 
-df_with_split = df.withColumn("even", F.col("id")%2)
+b_model_fraction = 0.05
+
+# COMMAND ----------
+
+df_with_split = df.withColumn("random_number", F.rand())
 df_a = (
   df_with_split
-  .where(F.col("even") == 0)
+  .where(F.col("random_number") >= b_model_fraction)
   .withColumn("group", F.lit("A"))
 )
 
 df_b = (
   df_with_split
-  .where(F.col("even") != 0)
+  .where(F.col("random_number") < b_model_fraction)
   .withColumn("group", F.lit("B"))
 )
 
 display(df_a.union(df_b))
+
+# COMMAND ----------
+
+df_a.union(df_b).groupby("group").count().display()
 
 # COMMAND ----------
 
@@ -131,16 +116,18 @@ display(df_a.union(df_b))
 
 # COMMAND ----------
 
+cols_keep = ["group", "id", "prediction", "probability", "timestamp"]
+
 df_pred_a = (
   model_a
   .transform(df_a)
-  .select("group", "id", "prediction", "probability")
+  .select(cols_keep)
 )
 
 df_pred_b = (
   model_b
   .transform(df_b)
-  .select("group", "id", "prediction", "probability")
+  .select(cols_keep)
 )
 
 df_pred = df_pred_a.union(df_pred_b)
@@ -161,7 +148,6 @@ display(df_pred)
 dbutils.fs.rm("/FileStore/tmp/streaming_ckpnt_risk_demo", recurse=True)
 (
   df_pred
-  .withColumn("timestamp", F.unix_timestamp(F.current_timestamp()))
   .writeStream
   .format("delta")
   .option("checkpointLocation", f"/FileStore/tmp/streaming_ckpnt_risk_demo")
@@ -185,4 +171,12 @@ dbutils.fs.rm("/FileStore/tmp/streaming_ckpnt_risk_demo", recurse=True)
 
 # COMMAND ----------
 
-display(spark.readStream.table("risk_stream_predictions"))
+display(
+  spark
+  .readStream
+  .table("risk_stream_predictions")
+)
+
+# COMMAND ----------
+
+

@@ -1,32 +1,4 @@
 # Databricks notebook source
-# MAGIC %md ---
-# MAGIC title: A/B testing with MLflow 3 - Start streaming sources
-# MAGIC authors:
-# MAGIC -  Sergio Ballesteros
-# MAGIC tags:
-# MAGIC - machine-learning
-# MAGIC - python
-# MAGIC - pyspark
-# MAGIC - a/b testing
-# MAGIC - ab testing
-# MAGIC - binary-classifier
-# MAGIC - mllib
-# MAGIC - credit risk
-# MAGIC - loan risk
-# MAGIC - finance
-# MAGIC created_at: 2021-07-27
-# MAGIC updated_at: 2021-07-27
-# MAGIC tldr: Creates a streaming source of credit requests using Delta. The stream will be used for online inference.
-# MAGIC ---
-
-# COMMAND ----------
-
-# MAGIC %md
-# MAGIC # Notebook Links
-# MAGIC - AWS demo.cloud: [https://demo.cloud.databricks.com/#notebook/10781588](https://demo.cloud.databricks.com/#notebook/10781588)
-
-# COMMAND ----------
-
 # MAGIC %md
 # MAGIC # Live Stream
 # MAGIC <img src="https://tdwi.org/articles/2017/08/07/-/media/TDWI/TDWI/BITW/datapipeline.jpg" width="700"/>
@@ -75,7 +47,7 @@ display(df)
 # COMMAND ----------
 
 for next_row in range(600, 1000):
-  time.sleep(np.random.uniform(0.1,0.3))
+  time.sleep(np.random.uniform(0.1,0.4))
   print('Row inserted,', next_row)
   spark.sql(f"""
       INSERT INTO risk_stream_source (
