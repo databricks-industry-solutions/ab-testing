@@ -80,7 +80,7 @@ display(df)
 
 # MAGIC %md
 # MAGIC ## Divide the incoming credit requests into two equally sized groups: A and B
-# MAGIC We will use a random number generator to make the split. 5% of the request will be made with model B and the remaining 95% with model A.
+# MAGIC We will use a random number generator to make the split. 50% of the request will be made with model B and the remaining 50% with model A.
 
 # COMMAND ----------
 
