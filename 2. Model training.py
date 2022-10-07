@@ -191,7 +191,7 @@ with mlflow.start_run(run_name="logistic_regression") as mlflow_run:
 
   # Fit the pipeline to training documents.
   model = pipeline.fit(df_train)
-  pr_auc = evaluate_model(model=model, df_test=df_test, image_name='pr-curve-model-a.png')
+  pr_auc = evaluate_model(model=model, df_test=df_test, image_name='/tmp/pr-curve-model-a.png')
   
   # Train on full dataset
   model = pipeline.fit(df_train.union(df_test))
@@ -223,7 +223,7 @@ with mlflow.start_run(run_name="gradient_boosted_trees") as mlflow_run:
 
   # Fit the pipeline to training documents.
   model = pipeline.fit(df_train)
-  pr_auc = evaluate_model(model=model, df_test=df_test, image_name='pr-curve-model-b.png')
+  pr_auc = evaluate_model(model=model, df_test=df_test, image_name='/tmp/pr-curve-model-b.png')
     
   # Train on full dataset
   model = pipeline.fit(df_train.union(df_test))

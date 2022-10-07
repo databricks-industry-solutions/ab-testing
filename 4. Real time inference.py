@@ -84,7 +84,7 @@ display(df)
 
 # COMMAND ----------
 
-b_model_fraction = 0.05
+b_model_fraction = 0.5
 
 # COMMAND ----------
 

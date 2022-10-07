@@ -145,22 +145,17 @@ df_pvalue  = spark.createDataFrame(data, T.StructType([
 (
   df_pvalue
  .write
- .mode("overwrite")
+ .mode("append")
  .format("delta")
  .saveAsTable("credit_risk_ab_testing")
 )
 
 # COMMAND ----------
 
-# MAGIC %sql
-# MAGIC DROP TABLE risk_metrics
-
-# COMMAND ----------
-
 (
   df_metrics
   .write
-  .mode("overwrite")
+  .mode("append")
   .format("delta")
   .saveAsTable("risk_metrics")
 )
