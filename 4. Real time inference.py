@@ -186,6 +186,7 @@ display(
 # MAGIC %md Now let's gracefully terminate the streaming queries.
 
 # COMMAND ----------
-
+import time
+time.sleep(120)
 for s in spark.streams.active:
   s.stop()
