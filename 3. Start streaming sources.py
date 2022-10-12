@@ -54,7 +54,7 @@ for next_row in range(600, 1000):
   print('Row inserted,', next_row)
   spark.sql(f"""
       INSERT INTO solacc_ab_test.risk_stream_source (
-      SELECT id, age, sex, job, housing, saving_accounts, checking_account, credit_amount, duration, purpose FROM german_credit_data
+      SELECT id, age, sex, job, housing, saving_accounts, checking_account, credit_amount, duration, purpose FROM solacc_ab_test.german_credit_data
       WHERE id = {next_row} )
   """)
   
