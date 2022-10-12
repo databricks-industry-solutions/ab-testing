@@ -1,20 +1,29 @@
-<img src=https://d1r5llqwmkrl74.cloudfront.net/notebooks/fsi/fs-lakehouse-logo-transparent.png width="600px">
+# AB Testing Accelerator
+In any machine learning related project, training a model offline is just one part of the process. In 2020, we saw how the whole world quickly changed due to the pandemic. When working with data that represents the outside world is it important to keep in mind that models are going to have different accuracies over time because the data used for that training might no longer be representative, also known as model drift. Hence, it is important to track the real world accuracy over time. 
 
-[![DBR](https://img.shields.io/badge/DBR-10.4ML-red?logo=databricks&style=for-the-badge)](https://docs.databricks.com/release-notes/runtime/10.4ml.html)
-[![CLOUD](https://img.shields.io/badge/CLOUD-ALL-blue?logo=googlecloud&style=for-the-badge)](https://cloud.google.com/databricks)
-[![POC](https://img.shields.io/badge/POC-10_days-green?style=for-the-badge)](https://databricks.com/try-databricks)
+Moreover, training offline new models might or might not lead to better real world performance. This is why A/B testing can be a good technique to understand the effects of making changes to the systems that consume these machine learning models, and help us making data driven decisions.
 
-*Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.*
+<img src="https://ml-ops.org/img/mlops-loop-en.jpg" width="400"/>
 
-___
-<john.doe@databricks.com>
+This series of notebooks we will demostrate the following:
+- How to do online inference in real time using Structured Streaming
+- How to do A/B testing with two machine learning models registered with MLflow
+- Detect model drift over time and visualize it with Databricks SQL
 
-___
+We will use a toy dataset related to credit risk. See the next cell for more details.
 
 
-IMAGE TO REFERENCE ARCHITECTURE
+The system that we will setup is the following:
 
-___
+<img src="https://github.com/sergioballesterossolanas/databricks-ab-testing/blob/master/img/arch_1.png?raw=true" width="1000"/>
+
+With this system we will:
+- Take credit risk data and trains two machine learning models with it. The models will predict the risk of giving a credit requested by a person.
+- The models will be registered with MLflow.
+- Create a live stream of new credit requests. We will use a Delta table, although this system would be compatible with other technologies such as Kafka. These requests will come from the credit risk dataset for demostration purposes.
+- Load the two trained ML models, and we will make real time predictions on new credit requests. The predictions will be saved as a Delta table (also streaming), although we give a suggestion on how we could deliver them to a Kafka server to export them to other systems.
+- We assume that there is a feedback loop, where we collect new grounth truth data related to the requests for which we made predictions. This means that we collect information about if the people who requested a credit actually paid back. For the sake of this exercise we will use again the credit risk dataset.
+- This feedback loop will be used to compare over time the predictions with the actual responses from the real world on both models. We will visualize on Databricks SQL how both models perform, effectivelly doing A/B testing and model drift all in one.
 
 &copy; 2022 Databricks, Inc. All rights reserved. The source in this notebook is provided subject to the Databricks License [https://databricks.com/db-license-source].  All included or referenced third party libraries are subject to the licenses set forth below.
 

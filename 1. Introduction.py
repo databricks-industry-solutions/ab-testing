@@ -1,4 +1,8 @@
 # Databricks notebook source
+# MAGIC %md This notebook series is also available at https://github.com/databricks-industry-solutions/ab-testing
+
+# COMMAND ----------
+
 # MAGIC %md
 # MAGIC # Introduction
 # MAGIC In any machine learning related project, training a model offline is just one part of the process. In 2020, we saw how the whole world quickly changed due to the pandemic. When working with data that represents the outside world is it important to keep in mind that models are going to have different accuracies over time because the data used for that training might no longer be representative, also known as model drift. Hence, it is important to track the real world accuracy over time. 
@@ -48,7 +52,14 @@
 
 # COMMAND ----------
 
-permanent_table_name = "german_credit_data"
+# MAGIC %sql 
+# MAGIC drop database if exists solacc_ab_test cascade;
+# MAGIC create database solacc_ab_test;
+# MAGIC use solacc_ab_test;
+
+# COMMAND ----------
+
+permanent_table_name = "solacc_ab_test.german_credit_data"
 
 df = (
   spark

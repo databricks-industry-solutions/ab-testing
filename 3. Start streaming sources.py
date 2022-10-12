@@ -1,4 +1,8 @@
 # Databricks notebook source
+# MAGIC %md This notebook series is also available at https://github.com/databricks-industry-solutions/ab-testing
+
+# COMMAND ----------
+
 # MAGIC %md
 # MAGIC # Live Stream
 # MAGIC <img src="https://tdwi.org/articles/2017/08/07/-/media/TDWI/TDWI/BITW/datapipeline.jpg" width="700"/>
@@ -18,8 +22,7 @@ import numpy as np
 # COMMAND ----------
 
 # MAGIC %sql
-# MAGIC DROP TABLE IF EXISTS risk_stream_source;
-# MAGIC CREATE TABLE risk_stream_source
+# MAGIC CREATE TABLE solacc_ab_test.risk_stream_source
 # MAGIC   ( id INTEGER, 
 # MAGIC     age INTEGER,
 # MAGIC     sex STRING,
@@ -39,7 +42,7 @@ df = (
   spark
   .readStream
   .format("delta")
-  .table("risk_stream_source")
+  .table("solacc_ab_test.risk_stream_source")
 )
 
 display(df)
@@ -50,8 +53,17 @@ for next_row in range(600, 1000):
   time.sleep(np.random.uniform(0.1,0.4))
   print('Row inserted,', next_row)
   spark.sql(f"""
-      INSERT INTO risk_stream_source (
+      INSERT INTO solacc_ab_test.risk_stream_source (
       SELECT id, age, sex, job, housing, saving_accounts, checking_account, credit_amount, duration, purpose FROM german_credit_data
       WHERE id = {next_row} )
   """)
   
+
+# COMMAND ----------
+
+# MAGIC %md Now let's gracefully terminate the streaming queries.
+
+# COMMAND ----------
+
+for s in spark.streams.active:
+  s.stop()

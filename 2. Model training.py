@@ -1,4 +1,8 @@
 # Databricks notebook source
+# MAGIC %md This notebook series is also available at https://github.com/databricks-industry-solutions/ab-testing
+
+# COMMAND ----------
+
 # MAGIC %pip install mlflow==1.29.0 pandas-profiling==3.3.0
 
 # COMMAND ----------
@@ -44,14 +48,9 @@ spark = (SparkSession.builder
             .getOrCreate())
 
 # Use MLflow to track experiments
-experiment_name = "german_credit_experiment"
-current_folder = "/".join(dbutils.notebook.entry_point.getDbutils().notebook().getContext().notebookPath().get().split("/")[:-1])
-#mlflow.set_experiment("{}/{}".format(current_folder, experiment_name))
-
-# COMMAND ----------
-
-# if "Repos" == current_folder.split("/")[1]:
-#   current_folder.replace("Repos", "")
+useremail = dbutils.notebook.entry_point.getDbutils().notebook().getContext().userName().get()
+experiment_name = f"/Users/{useremail}/german_credit_experiment"
+mlflow.set_experiment(experiment_name) 
 
 # COMMAND ----------
 
@@ -64,7 +63,7 @@ current_folder = "/".join(dbutils.notebook.entry_point.getDbutils().notebook().g
 
 # COMMAND ----------
 
-df = spark.read.table("default.german_credit_data").where(F.col("id") < 600) # Load only the first 600 rows
+df = spark.read.table("solacc_ab_test.german_credit_data").where(F.col("id") < 600) # Load only the first 600 rows
 display(df)
 
 # COMMAND ----------

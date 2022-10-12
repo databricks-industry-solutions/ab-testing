@@ -1,4 +1,8 @@
 # Databricks notebook source
+# MAGIC %md This notebook series is also available at https://github.com/databricks-industry-solutions/ab-testing
+
+# COMMAND ----------
+
 # MAGIC %pip install mlflow==1.29.0
 
 # COMMAND ----------
@@ -55,7 +59,7 @@ df = (
   spark
   .readStream
   .format("delta")
-  .table("risk_stream_source")
+  .table("solacc_ab_test.risk_stream_source")
   .withColumn("timestamp", F.unix_timestamp(F.current_timestamp()))
 )
 
@@ -141,7 +145,7 @@ display(df_pred)
 # COMMAND ----------
 
 # MAGIC %sql
-# MAGIC DROP TABLE IF EXISTS risk_stream_predictions;
+# MAGIC DROP TABLE IF EXISTS solacc_ab_test.risk_stream_predictions;
 
 # COMMAND ----------
 
@@ -151,7 +155,7 @@ dbutils.fs.rm("/FileStore/tmp/streaming_ckpnt_risk_demo", recurse=True)
   .writeStream
   .format("delta")
   .option("checkpointLocation", f"/FileStore/tmp/streaming_ckpnt_risk_demo")
-  .table("risk_stream_predictions")
+  .table("solacc_ab_test.risk_stream_predictions")
 )
 
 # COMMAND ----------
@@ -174,9 +178,14 @@ dbutils.fs.rm("/FileStore/tmp/streaming_ckpnt_risk_demo", recurse=True)
 display(
   spark
   .readStream
-  .table("risk_stream_predictions")
+  .table("solacc_ab_test.risk_stream_predictions")
 )
 
 # COMMAND ----------
 
+# MAGIC %md Now let's gracefully terminate the streaming queries.
 
+# COMMAND ----------
+
+for s in spark.streams.active:
+  s.stop()

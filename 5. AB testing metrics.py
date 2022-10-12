@@ -1,4 +1,8 @@
 # Databricks notebook source
+# MAGIC %md This notebook series is also available at https://github.com/databricks-industry-solutions/ab-testing
+
+# COMMAND ----------
+
 # MAGIC %md
 # MAGIC ## Computing metrics
 # MAGIC Great, now we have a table were we store the predictions and a table where we have the ground truth of the users who received predictions (we can assume that there is such a feedback loop).
@@ -52,14 +56,14 @@ def compute_metric(gt, p):
 df_pred = (
   spark
   .read
-  .table("risk_stream_predictions")
+  .table("solacc_ab_test.risk_stream_predictions")
   .select("group", "id", "prediction", vector_to_array(F.col("probability")).getItem(1).alias("prob"), "timestamp")
 )
 
 df_gt = (
   spark
   .read
-  .table("default.german_credit_data")
+  .table("solacc_ab_test.german_credit_data")
   .select("id", "risk")
   .withColumn("ground_truth", F.when(F.col("risk")=="good", 0).otherwise(1))
 )
@@ -147,7 +151,7 @@ df_pvalue  = spark.createDataFrame(data, T.StructType([
  .write
  .mode("append")
  .format("delta")
- .saveAsTable("credit_risk_ab_testing")
+ .saveAsTable("solacc_ab_test.credit_risk_ab_testing")
 )
 
 # COMMAND ----------
@@ -157,7 +161,7 @@ df_pvalue  = spark.createDataFrame(data, T.StructType([
   .write
   .mode("append")
   .format("delta")
-  .saveAsTable("risk_metrics")
+  .saveAsTable("solacc_ab_test.risk_metrics")
 )
 
 # COMMAND ----------
