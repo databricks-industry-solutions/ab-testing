@@ -65,7 +65,7 @@ job_json = {
                 "task_key": "ab_testing_04",
                 "depends_on": [
                     {
-                        "task_key": "ab_testing_03"
+                        "task_key": "ab_testing_02"
                     }
                 ]
             },
@@ -77,7 +77,7 @@ job_json = {
                 "task_key": "ab_testing_05",
                 "depends_on": [
                     {
-                        "task_key": "ab_testing_04"
+                        "task_key": "ab_testing_02"
                     }
                 ]
             }
