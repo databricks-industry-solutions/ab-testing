@@ -80,6 +80,18 @@ job_json = {
                         "task_key": "ab_testing_02"
                     }
                 ]
+            },
+            {
+                "job_cluster_key": "ab_testing_cluster",
+                "notebook_task": {
+                    "notebook_path": f"5. AB testing metrics"
+                },
+                "task_key": "ab_testing_06",
+                "depends_on": [
+                    {
+                        "task_key": "ab_testing_05"
+                    }
+                ]
             }
         ],
         "job_clusters": [

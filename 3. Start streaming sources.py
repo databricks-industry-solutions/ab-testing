@@ -65,5 +65,6 @@ for next_row in range(600, 1000):
 
 # COMMAND ----------
 
+time.sleep(300) # enough time for all records to be ingested
 for s in spark.streams.active:
   s.stop()

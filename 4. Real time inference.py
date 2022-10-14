@@ -33,6 +33,11 @@
 
 # COMMAND ----------
 
+import time
+time.sleep(60) # This notebook runs concurrently to notebook 3. Here we wait a minute for the stream in notebook 3 to process some records
+
+# COMMAND ----------
+
 import pyspark.sql.functions as F
 import mlflow
 
@@ -186,7 +191,7 @@ display(
 # MAGIC %md Now let's gracefully terminate the streaming queries.
 
 # COMMAND ----------
-import time
-time.sleep(120)
+
+time.sleep(300) # enough time to process all records
 for s in spark.streams.active:
   s.stop()
