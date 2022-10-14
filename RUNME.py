@@ -100,7 +100,7 @@ job_json = {
                 "new_cluster": {
                     "spark_version": "10.4.x-cpu-ml-scala2.12",
                 "spark_conf": {
-                    "spark.databricks.delta.formatCheck.enabled": "false"
+                    "spark.sql.streaming.stopTimeout": "60000"
                     },
                     "num_workers": 2,
                     "node_type_id": {"AWS": "i3.xlarge", "MSA": "Standard_D3_v2", "GCP": "n1-highmem-4"},
