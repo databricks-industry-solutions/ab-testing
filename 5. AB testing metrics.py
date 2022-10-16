@@ -19,6 +19,11 @@
 
 # COMMAND ----------
 
+import time
+time.sleep(240) # this notebook needs to execute concurrently to notebook 3 and 4, but start a bit later than 4
+
+# COMMAND ----------
+
 # MAGIC %md
 # MAGIC # Import libraries
 
@@ -33,11 +38,6 @@ import pandas as pd
 from scipy.stats import mannwhitneyu
 from datetime import datetime
 import pyspark.sql.types as T
-
-# COMMAND ----------
-
-import time
-time.sleep(240) # this notebook needs to execute concurrently to notebook 3 and 4, but start a bit later than 4
 
 # COMMAND ----------
 
@@ -83,6 +83,19 @@ df_metrics = (
   .drop()
 )
 display(df_metrics)
+
+# COMMAND ----------
+
+# MAGIC %md
+# MAGIC 
+# MAGIC # Plot the above metrics
+
+# COMMAND ----------
+
+import plotly.express as px
+pd1 = df_metrics.toPandas()
+fig = px.line(pd1.sort_values(by=['date_time'], ascending=[True]), x='date_time', y='pr_auc', line_group='group', color='group')
+fig
 
 # COMMAND ----------
 
