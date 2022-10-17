@@ -1,22 +1,25 @@
 # Databricks notebook source
-# MAGIC %md 
-# MAGIC # How to run this ab testing accelerator:
+# MAGIC %md This notebook sets up the companion cluster(s) to run the solution accelerator. It also creates the Workflow to illustrate the order of execution. Happy exploring! 
+# MAGIC 🎉
 # MAGIC 
-# MAGIC ### Method 1: 
+# MAGIC **Steps**
+# MAGIC 1. Simply attach this notebook to a cluster with DBR 11.0 and above, and hit Run-All for this notebook. A multi-task job and the clusters used in the job will be created for you and hyperlinks are printed on the last block of the notebook. 
 # MAGIC 
-# MAGIC You may run just this notebook, since it sets up the companion cluster(s) to run the solution accelerator. It also creates the Workflow to create a Workflow DAG and illustrate the order of execution. You can check Workflow job runs link at the end of this notebook to see how this solution accelerator executes. 
+# MAGIC 2. Run the accelerator notebooks: Feel free to explore the multi-step job page and **run the Workflow**, or **run the notebooks interactively** with the cluster to see how this solution accelerator executes. 
 # MAGIC 
-# MAGIC The pipelines, workflows and clusters created in this script are not user-specific, so if another user alters the workflow and cluster via UI, running this script again resets them.
+# MAGIC     2a. **Run the Workflow**: Navigate to the Workflow link and hit the `Run Now` 💥. 
+# MAGIC   
+# MAGIC     2b. **Run the notebooks interactively**: Attach the notebook with the cluster(s) created and execute as described in the `job_json['tasks']` below.
 # MAGIC 
-# MAGIC ### Method 2: 
+# MAGIC **Prerequisites** 
+# MAGIC 1. You need to have cluster creation permissions in this workspace.
 # MAGIC 
-# MAGIC You may directly set up your own 10.4+ ML cluster, and run notebooks 1-5 sequentially and interactively. You may delete some of the "time.sleep()" cells in order to save some time (since these are mostly designed for enough time gaps between notebooks runs for the workflow set up), as long as you ensure having enough gaps among running notebook 3-5 after notebook1&2. 
+# MAGIC 2. In case the environment has cluster-policies that interfere with automated deployment, you may need to manually create the cluster in accordance with the workspace cluster policy. The `job_json` definition below still provides valuable information about the configuration these series of notebooks should run with. 
 # MAGIC 
-# MAGIC ### Happy exploring!
+# MAGIC **Notes**
+# MAGIC 1. The pipelines, workflows and clusters created in this script are not user-specific. Keep in mind that rerunning this script again after modification resets them for other users too.
 # MAGIC 
-# MAGIC 
-# MAGIC 
-# MAGIC **Note**: If the job execution fails, please confirm that you have set up other environment dependencies as specified in the accelerator notebooks. Accelerators sometimes require the user to set up additional cloud infra or data access, for instance. 
+# MAGIC 2. If the job execution fails, please confirm that you have set up other environment dependencies as specified in the accelerator notebooks. Accelerators may require the user to set up additional cloud infra or secrets to manage credentials. 
 
 # COMMAND ----------
 
@@ -104,7 +107,7 @@ job_json = {
                     "spark.sql.streaming.stopTimeout": "60000"
                     },
                     "num_workers": 2,
-                    "node_type_id": {"AWS": "i3.xlarge", "MSA": "Standard_D3_v2", "GCP": "n1-highmem-4"},
+                    "node_type_id": {"AWS": "i3.xlarge", "MSA": "Standard_DS3_v2", "GCP": "n1-highmem-4"},
                     "custom_tags": {
                         "usage": "solacc_testing"
                     },
@@ -112,16 +115,6 @@ job_json = {
             }
         ]
     }
-
-# COMMAND ----------
-
-# MAGIC %md
-# MAGIC # How to check the results:
-# MAGIC 
-# MAGIC * You may check the automatically created jobs under "Workflows" tab->"Job runs" tab; or you may edit to get the link by copy paste the job information printed below directly following workspace URL. For example, "Job #958240233939092-649491 is RUNNING" corresponds to replacing the current page URL starting from "#job/...", so it will look like ```<DB-workspace-url>#job/958240233939092/run/649491``` "TODO"
-# MAGIC * One trigger of the run will take about 31 minutes in total. Users can modify some of the "sleep" timers for their own use cases. 
-# MAGIC * If one triggers a new run too soon from this same notebook, an error of "SKIPPED" may show up. Please finish your first Job runs before triggering a new one. 
-# MAGIC * Here is an example of the graph: "TODO"
 
 # COMMAND ----------
 
