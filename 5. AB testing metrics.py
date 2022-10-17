@@ -36,11 +36,6 @@ import pyspark.sql.types as T
 
 # COMMAND ----------
 
-import time
-time.sleep(240) # this notebook needs to execute concurrently to notebook 3 and 4, but start a bit later than 4
-
-# COMMAND ----------
-
 # MAGIC %md
 # MAGIC # Helper function
 
