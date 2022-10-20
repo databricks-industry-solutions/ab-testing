@@ -7,6 +7,28 @@
 
 # COMMAND ----------
 
+# MAGIC %md
+# MAGIC ### Wait until there is data available to make predictions
+
+# COMMAND ----------
+
+import time
+# Check that the streaming table exists
+while True:
+  if spark._jsparkSession.catalog().tableExists("solacc_ab_test", "risk_stream_source"):
+    break
+  else:
+    time.sleep(1)
+
+minimum_number_records = 1
+while True:
+  if spark.read.table("solacc_ab_test.risk_stream_source").count() >= minimum_number_records:
+    break
+  else:
+    time.sleep(1)
+
+# COMMAND ----------
+
 # MAGIC %md 
 # MAGIC ## Real time risk prediciton with A/B testing
 # MAGIC 
@@ -30,11 +52,6 @@
 # MAGIC Once we have registered our models we can see them in the MLflow UI. Note the version numbers of your models. In this case we will use versions 1 and 2, although for you these might be different. You can change this in the next cell.
 # MAGIC 
 # MAGIC <img src="https://github.com/sergioballesterossolanas/databricks-ab-testing/blob/master/img/model_versions.png?raw=true" width="1000"/>
-
-# COMMAND ----------
-
-import time
-time.sleep(60) # This notebook runs concurrently to notebook 3. Here we wait a minute for the stream in notebook 3 to process some records
 
 # COMMAND ----------
 
@@ -84,6 +101,8 @@ display(df)
 # MAGIC   .load()
 # MAGIC )
 # MAGIC ~~~
+# MAGIC 
+# MAGIC More info at https://docs.databricks.com/structured-streaming/kafka.html
 
 # COMMAND ----------
 
@@ -192,6 +211,5 @@ display(
 
 # COMMAND ----------
 
-time.sleep(300) # enough time to process all records
 for s in spark.streams.active:
   s.stop()

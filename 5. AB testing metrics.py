@@ -20,7 +20,19 @@
 # COMMAND ----------
 
 import time
-time.sleep(240) # this notebook needs to execute concurrently to notebook 3 and 4, but start a bit later than 4
+# Check that the streaming table exists
+while True:
+  if spark._jsparkSession.catalog().tableExists("solacc_ab_test", "risk_stream_predictions"):
+    break
+  else:
+    time.sleep(1)
+
+minimum_number_records = 230
+while True:
+  if spark.read.table("solacc_ab_test.risk_stream_predictions").count() >= minimum_number_records:
+    break
+  else:
+    time.sleep(1)
 
 # COMMAND ----------
 

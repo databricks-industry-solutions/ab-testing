@@ -22,6 +22,11 @@ import numpy as np
 # COMMAND ----------
 
 # MAGIC %sql
+# MAGIC DROP TABLE IF EXISTS solacc_ab_test.risk_stream_source
+
+# COMMAND ----------
+
+# MAGIC %sql
 # MAGIC CREATE TABLE solacc_ab_test.risk_stream_source
 # MAGIC   ( id INTEGER, 
 # MAGIC     age INTEGER,
@@ -50,7 +55,7 @@ display(df)
 # COMMAND ----------
 
 for next_row in range(600, 1000):
-  time.sleep(np.random.uniform(0.1,0.4))
+  #time.sleep(np.random.uniform(0.1,0.4))
   print('Row inserted,', next_row)
   spark.sql(f"""
       INSERT INTO solacc_ab_test.risk_stream_source (
@@ -65,6 +70,9 @@ for next_row in range(600, 1000):
 
 # COMMAND ----------
 
-time.sleep(300) # enough time for all records to be ingested
 for s in spark.streams.active:
   s.stop()
+
+# COMMAND ----------
+
+
