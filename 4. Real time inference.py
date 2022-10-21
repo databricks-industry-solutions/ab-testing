@@ -211,5 +211,31 @@ display(
 
 # COMMAND ----------
 
+spark.read.table("solacc_ab_test.risk_stream_predictions").count()
+
+# COMMAND ----------
+
+# MAGIC %md
+# MAGIC ### Gracefully stop the streams when all data points have predictions
+
+# COMMAND ----------
+
+minimum_number_records = 396
+while True:
+  current_number_records = spark.read.table("solacc_ab_test.risk_stream_predictions").count()
+  print("Number of records with predictions", current_number_records)
+  if current_number_records >= minimum_number_records:
+    break
+  else:
+    time.sleep(10)
+
 for s in spark.streams.active:
+  print("Stopping stream")
+  s.stop()
+
+# COMMAND ----------
+
+time.sleep(120)
+for s in spark.streams.active:
+  print("Stopping stream")
   s.stop()

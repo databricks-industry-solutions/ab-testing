@@ -19,6 +19,10 @@
 
 # COMMAND ----------
 
+spark.read.table("solacc_ab_test.risk_stream_predictions").display()
+
+# COMMAND ----------
+
 import time
 # Check that the streaming table exists
 while True:
@@ -29,10 +33,12 @@ while True:
 
 minimum_number_records = 230
 while True:
-  if spark.read.table("solacc_ab_test.risk_stream_predictions").count() >= minimum_number_records:
+  current_number_records = spark.read.table("solacc_ab_test.risk_stream_predictions").count()
+  print("Number of records with predictions", current_number_records)
+  if current_number_records >= minimum_number_records:
     break
   else:
-    time.sleep(1)
+    time.sleep(10)
 
 # COMMAND ----------
 
