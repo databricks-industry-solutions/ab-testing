@@ -159,7 +159,6 @@ df_pred_b = (
 )
 
 df_pred = df_pred_a.union(df_pred_b)
-display(df_pred)
 
 # COMMAND ----------
 
