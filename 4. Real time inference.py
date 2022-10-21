@@ -133,7 +133,7 @@ display(df_a.union(df_b))
 
 # COMMAND ----------
 
-df_a.union(df_b).groupby("group").count().display()
+# df_a.union(df_b).groupby("group").count().display()
 
 # COMMAND ----------
 
@@ -228,9 +228,8 @@ for s in spark.streams.active:
   print("Stopping stream")
   s.stop()
 
-# COMMAND ----------
-
 time.sleep(120)
 for s in spark.streams.active:
   print("Stopping stream")
   s.stop()
+
