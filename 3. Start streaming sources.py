@@ -1,5 +1,5 @@
 # Databricks notebook source
-# MAGIC %md This notebook series is also available at https://github.com/databricks-industry-solutions/ab-testing
+# MAGIC %md This notebook series is also available at https://github.com/databricks-industry-solutions/ab-testing.
 
 # COMMAND ----------
 
