@@ -133,10 +133,6 @@ display(df_a.union(df_b))
 
 # COMMAND ----------
 
-df_a.union(df_b).groupby("group").count().display()
-
-# COMMAND ----------
-
 # MAGIC %md
 # MAGIC ## Make predictions with the two models
 # MAGIC - Model A will make predictions on the data classified in group A
