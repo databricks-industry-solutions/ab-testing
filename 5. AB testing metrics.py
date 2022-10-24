@@ -19,8 +19,26 @@
 
 # COMMAND ----------
 
+spark.read.table("solacc_ab_test.risk_stream_predictions").display()
+
+# COMMAND ----------
+
 import time
-time.sleep(240) # this notebook needs to execute concurrently to notebook 3 and 4, but start a bit later than 4
+# Check that the streaming table exists
+while True:
+  if spark._jsparkSession.catalog().tableExists("solacc_ab_test", "risk_stream_predictions"):
+    break
+  else:
+    time.sleep(1)
+
+minimum_number_records = 230
+while True:
+  current_number_records = spark.read.table("solacc_ab_test.risk_stream_predictions").count()
+  print("Number of records with predictions", current_number_records)
+  if current_number_records >= minimum_number_records:
+    break
+  else:
+    time.sleep(10)
 
 # COMMAND ----------
 
@@ -93,8 +111,8 @@ display(df_metrics)
 # COMMAND ----------
 
 import plotly.express as px
-pd1 = df_metrics.toPandas()
-fig = px.line(pd1.sort_values(by=['date_time'], ascending=[True]), x='date_time', y='pr_auc', line_group='group', color='group')
+pd1 = df_metrics.toPandas().sort_values(by=['date_time'], ascending=[True]).reset_index(drop=True)
+fig = px.line(pd1, x='date_time', y='pr_auc', line_group='group', color='group')
 fig
 
 # COMMAND ----------
@@ -186,8 +204,6 @@ df_pvalue  = spark.createDataFrame(data, T.StructType([
 
 # MAGIC %md
 # MAGIC ### Optional: create a dashboard on Databricks SQL 
-# MAGIC 
-# MAGIC DB internal workspace link: https://e2-demo-west.cloud.databricks.com/sql/dashboards/02566bf1-3ecd-4d63-b3ba-b6ccf859a530-risk-demo
 # MAGIC 
 # MAGIC <img src="https://github.com/sergioballesterossolanas/databricks-ab-testing/blob/master/img/sql_dashboard.png?raw=true" width="1300"/>
 

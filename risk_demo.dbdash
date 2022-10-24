@@ -1,0 +1,644 @@
+{
+  "queries": [
+    {
+      "id": "7d973c6d-4f63-46bf-98c9-4b0407d9fea8",
+      "name": "GermanCreditRisk AB test",
+      "description": null,
+      "query": "SELECT CASE WHEN t.best_model IS NULL THEN 'Models perform similarly' ELSE t.best_model END as best_model\nFROM (SELECT * FROM credit_risk_ab_testing ORDER BY timestamp desc LIMIT 1) as t",
+      "options": {
+        "apply_auto_limit": false,
+        "parameters": []
+      },
+      "visualizations": [
+        {
+          "id": "ab8015f7-76d5-46a0-8698-299b93dac719",
+          "type": "TABLE",
+          "name": "Table",
+          "description": "",
+          "options": {
+            "itemsPerPage": 25,
+            "condensed": false,
+            "columns": [
+              {
+                "booleanValues": [
+                  "false",
+                  "true"
+                ],
+                "imageUrlTemplate": "{{ @ }}",
+                "imageTitleTemplate": "{{ @ }}",
+                "imageWidth": "",
+                "imageHeight": "",
+                "linkUrlTemplate": "{{ @ }}",
+                "linkTextTemplate": "{{ @ }}",
+                "linkTitleTemplate": "{{ @ }}",
+                "linkOpenInNewTab": true,
+                "name": "best_model",
+                "type": "string",
+                "displayAs": "string",
+                "visible": true,
+                "order": 100000,
+                "title": "best_model",
+                "allowSearch": false,
+                "alignContent": "left",
+                "allowHTML": true,
+                "highlightLinks": false
+              }
+            ],
+            "showPlotlyControls": true
+          }
+        },
+        {
+          "id": "f9b31dc9-ffb1-4494-b256-f5fb6612cccf",
+          "type": "TABLE",
+          "name": "Table",
+          "description": "",
+          "options": {}
+        }
+      ]
+    },
+    {
+      "id": "d1877331-608e-4efd-b3b6-c633d286f1aa",
+      "name": "New query",
+      "description": null,
+      "query": "select * from risk_stream_predictions",
+      "options": {
+        "parent": "folders/3796642824742843",
+        "apply_auto_limit": true,
+        "folder_node_status": "ACTIVE",
+        "folder_node_internal_name": "tree/2709828731693318",
+        "visualization_control_order": [],
+        "catalog": "hive_metastore",
+        "schema": "default",
+        "parameters": []
+      },
+      "visualizations": [
+        {
+          "id": "0393c23a-6e58-4b91-94b5-faa23e2a5623",
+          "type": "TABLE",
+          "name": "Table",
+          "description": "",
+          "options": {
+            "version": 2
+          }
+        },
+        {
+          "id": "c406c589-840c-4f19-a94b-fc9960e5f547",
+          "type": "CHART",
+          "name": "Bar 1",
+          "description": "",
+          "options": {
+            "version": 2,
+            "globalSeriesType": "column",
+            "sortX": true,
+            "sortY": true,
+            "legend": {
+              "traceorder": "normal"
+            },
+            "xAxis": {
+              "type": "-",
+              "labels": {
+                "enabled": true
+              }
+            },
+            "yAxis": [
+              {
+                "type": "-"
+              },
+              {
+                "type": "-",
+                "opposite": true
+              }
+            ],
+            "alignYAxesAtZero": false,
+            "error_y": {
+              "type": "data",
+              "visible": true
+            },
+            "series": {
+              "stacking": null,
+              "error_y": {
+                "type": "data",
+                "visible": true
+              }
+            },
+            "seriesOptions": {
+              "column_6223567b17867": {
+                "yAxis": 0,
+                "type": "column"
+              }
+            },
+            "valuesOptions": {},
+            "direction": {
+              "type": "counterclockwise"
+            },
+            "sizemode": "diameter",
+            "coefficient": 1,
+            "numberFormat": "0,0[.]00000",
+            "percentFormat": "0[.]00%",
+            "textFormat": "",
+            "missingValuesAsZero": true,
+            "useAggregationsUi": true,
+            "swappedAxes": false,
+            "dateTimeFormat": "YYYY-MM-DD HH:mm",
+            "showDataLabels": false,
+            "columnConfigurationMap": {
+              "x": {
+                "column": "group",
+                "id": "column_6223567b17865"
+              },
+              "y": [
+                {
+                  "id": "column_6223567b17867",
+                  "column": "id",
+                  "transform": "COUNT"
+                }
+              ],
+              "series": {
+                "column": "group",
+                "id": "column_6223567b17868"
+              }
+            },
+            "isAggregationOn": true
+          }
+        }
+      ]
+    },
+    {
+      "id": "a070639c-6596-41b7-bff3-0c0136a150a3",
+      "name": "Risk Stream Predictions",
+      "description": null,
+      "query": "select * from risk_stream_predictions",
+      "options": {
+        "apply_auto_limit": false,
+        "parameters": []
+      },
+      "visualizations": [
+        {
+          "id": "726060fc-ee37-11eb-86fd-06ea372c6b27",
+          "type": "TABLE",
+          "name": "Table",
+          "description": "",
+          "options": {}
+        },
+        {
+          "id": "72606140-ee37-11eb-86fd-06ea372c6b27",
+          "type": "COUNTER",
+          "name": "Credit requests",
+          "description": "",
+          "options": {
+            "counterLabel": "",
+            "counterColName": "id",
+            "rowNumber": 1,
+            "targetRowNumber": 1,
+            "stringDecimal": 0,
+            "stringDecChar": ".",
+            "stringThouSep": ",",
+            "tooltipFormat": "0,0.000",
+            "showPlotlyControls": true,
+            "countRow": true
+          }
+        }
+      ]
+    },
+    {
+      "id": "03d382e9-cc36-441b-bd53-8e3012b300b3",
+      "name": "Risk Model A/B testing and drift",
+      "description": null,
+      "query": "SELECT * \nfrom risk_metrics",
+      "options": {
+        "apply_auto_limit": false,
+        "visualization_control_order": [],
+        "parameters": []
+      },
+      "visualizations": [
+        {
+          "id": "2e4397f2-e694-4b14-a2cf-2d530f13afb0",
+          "type": "CHART",
+          "name": "Line 1",
+          "description": "",
+          "options": {
+            "version": 2,
+            "globalSeriesType": "line",
+            "sortX": true,
+            "sortY": true,
+            "legend": {
+              "traceorder": "normal"
+            },
+            "xAxis": {
+              "type": "-",
+              "labels": {
+                "enabled": true
+              }
+            },
+            "yAxis": [
+              {
+                "type": "-"
+              },
+              {
+                "type": "-",
+                "opposite": true
+              }
+            ],
+            "alignYAxesAtZero": false,
+            "error_y": {
+              "type": "data",
+              "visible": true
+            },
+            "series": {
+              "stacking": "stack",
+              "error_y": {
+                "type": "data",
+                "visible": true
+              }
+            },
+            "seriesOptions": {
+              "column_d80e5b353167": {
+                "name": "pr_auc",
+                "yAxis": 0,
+                "type": "line"
+              }
+            },
+            "valuesOptions": {},
+            "direction": {
+              "type": "counterclockwise"
+            },
+            "sizemode": "diameter",
+            "coefficient": 1,
+            "numberFormat": "0,0[.]00000",
+            "percentFormat": "0[.]00%",
+            "textFormat": "",
+            "missingValuesAsZero": true,
+            "useAggregationsUi": true,
+            "swappedAxes": false,
+            "dateTimeFormat": "YYYY-MM-DD HH:mm",
+            "showDataLabels": false,
+            "columnConfigurationMap": {
+              "x": {
+                "column": "date_time",
+                "id": "column_d80e5b353465"
+              },
+              "series": {
+                "column": "group",
+                "id": "column_d80e5b353466"
+              },
+              "y": [
+                {
+                  "column": "pr_auc",
+                  "transform": "AVG",
+                  "id": "column_d80e5b353167"
+                }
+              ]
+            },
+            "isAggregationOn": true,
+            "condensed": true,
+            "withRowNumber": true
+          }
+        },
+        {
+          "id": "725db33c-ee37-11eb-86fd-06ea372c6b27",
+          "type": "TABLE",
+          "name": "Table",
+          "description": "",
+          "options": {}
+        }
+      ]
+    },
+    {
+      "id": "d59aa758-4585-499a-b041-7cdc473d376a",
+      "name": "German Credit Data",
+      "description": null,
+      "query": "SELECT * FROM german_credit_data",
+      "options": {
+        "apply_auto_limit": true,
+        "parameters": []
+      },
+      "visualizations": [
+        {
+          "id": "725dd401-ee37-11eb-86fd-06ea372c6b27",
+          "type": "TABLE",
+          "name": "Table",
+          "description": "",
+          "options": {}
+        },
+        {
+          "id": "725dd443-ee37-11eb-86fd-06ea372c6b27",
+          "type": "COUNTER",
+          "name": "Total requests",
+          "description": "",
+          "options": {
+            "counterLabel": "Loan requests",
+            "counterColName": "risk",
+            "rowNumber": 1,
+            "targetRowNumber": 1,
+            "stringDecimal": 0,
+            "stringDecChar": ".",
+            "stringThouSep": ",",
+            "tooltipFormat": "0,0.000",
+            "showPlotlyControls": true,
+            "countRow": true
+          }
+        },
+        {
+          "id": "725dd48f-ee37-11eb-86fd-06ea372c6b27",
+          "type": "CHART",
+          "name": "Risk",
+          "description": "",
+          "options": {
+            "version": 1,
+            "globalSeriesType": "pie",
+            "sortX": true,
+            "legend": {
+              "enabled": true,
+              "placement": "auto",
+              "traceorder": "normal"
+            },
+            "xAxis": {
+              "type": "-",
+              "labels": {
+                "enabled": true
+              },
+              "title": {
+                "text": "risk"
+              }
+            },
+            "yAxis": [
+              {
+                "type": "linear",
+                "title": {
+                  "text": "id"
+                }
+              },
+              {
+                "type": "linear",
+                "opposite": true,
+                "title": {
+                  "text": null
+                }
+              }
+            ],
+            "alignYAxesAtZero": false,
+            "error_y": {
+              "type": "data",
+              "visible": true
+            },
+            "series": {
+              "stacking": null,
+              "error_y": {
+                "type": "data",
+                "visible": true
+              }
+            },
+            "seriesOptions": {},
+            "valuesOptions": {},
+            "direction": {
+              "type": "counterclockwise"
+            },
+            "sizemode": "diameter",
+            "coefficient": 1,
+            "numberFormat": "0,0[.]00000",
+            "percentFormat": "0[.]00%",
+            "textFormat": "",
+            "missingValuesAsZero": true,
+            "showDataLabels": true,
+            "dateTimeFormat": "YYYY-MM-DD HH:mm",
+            "columnConfigurationMap": {
+              "x": "risk",
+              "y": [
+                "id"
+              ],
+              "series": "undefined"
+            },
+            "showPlotlyControls": true,
+            "swappedAxes": false
+          }
+        },
+        {
+          "id": "725dd4fe-ee37-11eb-86fd-06ea372c6b27",
+          "type": "CHART",
+          "name": "Risk, duration and credit amount",
+          "description": "",
+          "options": {
+            "version": 1,
+            "globalSeriesType": "bubble",
+            "sortX": true,
+            "legend": {
+              "enabled": true,
+              "placement": "auto",
+              "traceorder": "normal"
+            },
+            "xAxis": {
+              "type": "-",
+              "labels": {
+                "enabled": true
+              },
+              "title": {
+                "text": "duration"
+              }
+            },
+            "yAxis": [
+              {
+                "type": "linear",
+                "title": {
+                  "text": "credit_amount"
+                }
+              },
+              {
+                "type": "linear",
+                "opposite": true,
+                "title": {
+                  "text": null
+                }
+              }
+            ],
+            "alignYAxesAtZero": false,
+            "error_y": {
+              "type": "data",
+              "visible": true
+            },
+            "series": {
+              "stacking": null,
+              "error_y": {
+                "type": "data",
+                "visible": true
+              }
+            },
+            "seriesOptions": {},
+            "valuesOptions": {},
+            "direction": {
+              "type": "counterclockwise"
+            },
+            "sizemode": "diameter",
+            "coefficient": 1,
+            "numberFormat": "0,0[.]00000",
+            "percentFormat": "0[.]00%",
+            "textFormat": "",
+            "missingValuesAsZero": true,
+            "showDataLabels": false,
+            "dateTimeFormat": "YYYY-MM-DD HH:mm",
+            "columnConfigurationMap": {
+              "x": "duration",
+              "y": [
+                "credit_amount"
+              ],
+              "size": "duration",
+              "series": "risk"
+            },
+            "showPlotlyControls": true,
+            "swappedAxes": false
+          }
+        }
+      ]
+    }
+  ],
+  "dashboard": {
+    "id": "02566bf1-3ecd-4d63-b3ba-b6ccf859a530",
+    "name": "Risk demo",
+    "widgets": [
+      {
+        "id": "bf13e595-e64a-11eb-86fd-06ea372c6b27",
+        "width": 1,
+        "options": {
+          "parameterMappings": {},
+          "isHidden": false,
+          "position": {
+            "autoHeight": false,
+            "sizeX": 4,
+            "sizeY": 8,
+            "minSizeX": 1,
+            "maxSizeX": 6,
+            "minSizeY": 5,
+            "maxSizeY": 1000,
+            "col": 0,
+            "row": 8
+          }
+        },
+        "dashboard_id": "02566bf1-3ecd-4d63-b3ba-b6ccf859a530",
+        "text": "",
+        "visualization_id": "725dd4fe-ee37-11eb-86fd-06ea372c6b27"
+      },
+      {
+        "id": "b92054ac-c425-44ac-a875-0017363c943c",
+        "width": 1,
+        "options": {
+          "parameterMappings": {},
+          "title": "Credit requests - Risk Stream Predictions",
+          "description": "",
+          "isHidden": false,
+          "position": {
+            "autoHeight": false,
+            "sizeX": 2,
+            "sizeY": 6,
+            "minSizeX": 1,
+            "maxSizeX": 6,
+            "minSizeY": 1,
+            "maxSizeY": 1000,
+            "col": 4,
+            "row": 4
+          }
+        },
+        "dashboard_id": "02566bf1-3ecd-4d63-b3ba-b6ccf859a530",
+        "text": "",
+        "visualization_id": "72606140-ee37-11eb-86fd-06ea372c6b27"
+      },
+      {
+        "id": "abaa74cf-2286-4597-bf5e-6d488f8c7688",
+        "width": 1,
+        "options": {
+          "parameterMappings": {},
+          "title": "Best model based on statistical test",
+          "description": "",
+          "isHidden": false,
+          "position": {
+            "autoHeight": false,
+            "sizeX": 2,
+            "sizeY": 4,
+            "minSizeX": 2,
+            "maxSizeX": 6,
+            "minSizeY": 1,
+            "maxSizeY": 1000,
+            "col": 4,
+            "row": 0
+          }
+        },
+        "dashboard_id": "02566bf1-3ecd-4d63-b3ba-b6ccf859a530",
+        "text": "",
+        "visualization_id": "f9b31dc9-ffb1-4494-b256-f5fb6612cccf"
+      },
+      {
+        "id": "489bfb1a-4476-4270-b498-259d6da7681e",
+        "width": 1,
+        "options": {
+          "parameterMappings": {},
+          "title": "Table - Risk Model A/B testing and drift",
+          "description": "",
+          "isHidden": false,
+          "position": {
+            "autoHeight": false,
+            "sizeX": 4,
+            "sizeY": 8,
+            "minSizeX": 2,
+            "maxSizeX": 6,
+            "minSizeY": 1,
+            "maxSizeY": 1000,
+            "col": 0,
+            "row": 16
+          }
+        },
+        "dashboard_id": "02566bf1-3ecd-4d63-b3ba-b6ccf859a530",
+        "text": "",
+        "visualization_id": "725db33c-ee37-11eb-86fd-06ea372c6b27"
+      },
+      {
+        "id": "ee1ee367-2961-46a0-b8c0-b9dafbaf3067",
+        "width": 1,
+        "options": {
+          "parameterMappings": {},
+          "title": "Line 1 - Risk Model A/B testing and drift",
+          "description": "",
+          "isHidden": false,
+          "position": {
+            "autoHeight": false,
+            "sizeX": 4,
+            "sizeY": 8,
+            "minSizeX": 1,
+            "maxSizeX": 6,
+            "minSizeY": 5,
+            "maxSizeY": 1000,
+            "col": 0,
+            "row": 0
+          }
+        },
+        "dashboard_id": "02566bf1-3ecd-4d63-b3ba-b6ccf859a530",
+        "text": "",
+        "visualization_id": "2e4397f2-e694-4b14-a2cf-2d530f13afb0"
+      },
+      {
+        "id": "43f11cd5-f9ea-4802-888d-d24d26f6f627",
+        "width": 1,
+        "options": {
+          "parameterMappings": {},
+          "isHidden": false,
+          "position": {
+            "autoHeight": false,
+            "sizeX": 3,
+            "sizeY": 8,
+            "minSizeX": 1,
+            "maxSizeX": 6,
+            "minSizeY": 5,
+            "maxSizeY": 1000,
+            "col": 0,
+            "row": 30
+          }
+        },
+        "dashboard_id": "02566bf1-3ecd-4d63-b3ba-b6ccf859a530",
+        "text": "",
+        "visualization_id": "c406c589-840c-4f19-a94b-fc9960e5f547"
+      }
+    ],
+    "tags": [],
+    "color_palette": null,
+    "dashboard_filters_enabled": false,
+    "is_archived": false
+  },
+  "version": "1.0"
+}
