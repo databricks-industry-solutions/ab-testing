@@ -133,7 +133,7 @@ display(df_a.union(df_b))
 
 # COMMAND ----------
 
-# df_a.union(df_b).groupby("group").count().display()
+df_a.union(df_b).groupby("group").count().display()
 
 # COMMAND ----------
 

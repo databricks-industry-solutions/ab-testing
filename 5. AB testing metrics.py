@@ -111,8 +111,8 @@ display(df_metrics)
 # COMMAND ----------
 
 import plotly.express as px
-pd1 = df_metrics.toPandas()
-fig = px.line(pd1.sort_values(by=['date_time'], ascending=[True]), x='date_time', y='pr_auc', line_group='group', color='group')
+pd1 = df_metrics.toPandas().sort_values(by=['date_time'].reset_index(drop=True)
+fig = px.line(pd1, ascending=[True]), x='date_time', y='pr_auc', line_group='group', color='group')
 fig
 
 # COMMAND ----------
