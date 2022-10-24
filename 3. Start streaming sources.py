@@ -55,7 +55,6 @@ display(df)
 # COMMAND ----------
 
 for next_row in range(600, 1000):
-  #time.sleep(np.random.uniform(0.1,0.4))
   print('Row inserted,', next_row)
   spark.sql(f"""
       INSERT INTO solacc_ab_test.risk_stream_source (

@@ -3,7 +3,7 @@
 
 # COMMAND ----------
 
-# MAGIC %pip install mlflow==1.29.0
+# MAGIC %pip install mlflow==1.29.0 numpy==1.23.4
 
 # COMMAND ----------
 
@@ -116,7 +116,16 @@ b_model_fraction = 0.5
 
 # COMMAND ----------
 
-df_with_split = df.withColumn("random_number", F.rand())
+import pandas as pd
+import numpy as np
+from pyspark.sql.functions import pandas_udf
+
+@pandas_udf('double')
+def pandas_random_number(s: pd.Series) -> pd.Series:
+    return s.apply(lambda x: np.random.uniform())
+
+df_with_split = df.withColumn("random_number", pandas_random_number("id"))
+  
 df_a = (
   df_with_split
   .where(F.col("random_number") >= b_model_fraction)
@@ -169,6 +178,9 @@ df_pred = df_pred_a.union(df_pred_b)
 # COMMAND ----------
 
 dbutils.fs.rm("/FileStore/tmp/streaming_ckpnt_risk_demo", recurse=True)
+
+# COMMAND ----------
+
 (
   df_pred
   .writeStream
@@ -207,7 +219,7 @@ display(
 # COMMAND ----------
 
 # MAGIC %md
-# MAGIC ### Gracefully stop the streams when all data points have predictions
+# MAGIC ### Gracefully stop the streams when most data points have predictions
 
 # COMMAND ----------
 
