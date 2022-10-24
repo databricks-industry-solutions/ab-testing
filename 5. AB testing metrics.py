@@ -111,8 +111,8 @@ display(df_metrics)
 # COMMAND ----------
 
 import plotly.express as px
-pd1 = df_metrics.toPandas().sort_values(by=['date_time'].reset_index(drop=True)
-fig = px.line(pd1, ascending=[True]), x='date_time', y='pr_auc', line_group='group', color='group')
+pd1 = df_metrics.toPandas().sort_values(by=['date_time']).reset_index(drop=True)
+fig = px.line(pd1, ascending=[True], x='date_time', y='pr_auc', line_group='group', color='group')
 fig
 
 # COMMAND ----------
@@ -204,8 +204,6 @@ df_pvalue  = spark.createDataFrame(data, T.StructType([
 
 # MAGIC %md
 # MAGIC ### Optional: create a dashboard on Databricks SQL 
-# MAGIC 
-# MAGIC DB internal workspace link: https://e2-demo-west.cloud.databricks.com/sql/dashboards/02566bf1-3ecd-4d63-b3ba-b6ccf859a530-risk-demo
 # MAGIC 
 # MAGIC <img src="https://github.com/sergioballesterossolanas/databricks-ab-testing/blob/master/img/sql_dashboard.png?raw=true" width="1300"/>
 

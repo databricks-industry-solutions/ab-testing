@@ -102,7 +102,7 @@ job_json = {
             {
                 "job_cluster_key": "ab_testing_cluster",
                 "new_cluster": {
-                    "spark_version": "10.4.x-cpu-ml-scala2.12",
+                    "spark_version": "11.3.x-cpu-ml-scala2.12",
                 "spark_conf": {
                     "spark.sql.streaming.stopTimeout": "60000"
                     },
@@ -120,4 +120,6 @@ job_json = {
 
 dbutils.widgets.dropdown("run_job", "False", ["True", "False"])
 run_job = dbutils.widgets.get("run_job") == "True"
-NotebookSolutionCompanion().deploy_compute(job_json, run_job=run_job)
+nsc = NotebookSolutionCompanion()
+nsc.deploy_compute(job_json, run_job=run_job)
+nsc.deploy_dbsql("./risk_demo.dbdash")
