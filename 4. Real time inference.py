@@ -228,8 +228,3 @@ for s in spark.streams.active:
   print("Stopping stream")
   s.stop()
 
-time.sleep(120)
-for s in spark.streams.active:
-  print("Stopping stream")
-  s.stop()
-
