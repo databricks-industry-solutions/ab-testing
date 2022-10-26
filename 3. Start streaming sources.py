@@ -65,7 +65,7 @@ for next_row in range(600, 1000):
 
 # COMMAND ----------
 
-# MAGIC %md Now let's gracefully terminate the streaming queries.
+# MAGIC %md Now let's gracefully terminate the streaming queries after all rows are inserted.
 
 # COMMAND ----------
 
