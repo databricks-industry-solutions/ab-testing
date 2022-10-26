@@ -10,7 +10,7 @@
 # MAGIC <img src="https://github.com/sergioballesterossolanas/databricks-ab-testing/blob/master/img/arch_4.png?raw=true" width="1000"/>
 # MAGIC 
 # MAGIC 
-# MAGIC In this notebook we are going to compare the predictions with the actual responses for the models A and B over time. We will compute the Precision Recall AUC in 1 minute buckets.
+# MAGIC In this notebook, we are going to compare the predictions with the actual responses for the models A and B over time. We will compute the Precision Recall AUC in 1 minute buckets. We suggest users to start running this notebook a few minutes after the previous notebook4 has started running. If you are running this notebook manually, you can also click "run all" a few times to see the plot changes when more records (from notebook4) are avialble as time goes on.  
 # MAGIC 
 # MAGIC We will save these results in a Delta table so that we can read it from Databricks SQL. This will allow us to track the quality of both models over time and set up alerts when the quality of the models decrease over a certain threshold. This could be an input to retrain the models with fresher data. This process could be manual, but also could be easily automated by creating a job.
 # MAGIC 
@@ -68,6 +68,16 @@ import pyspark.sql.types as T
 def compute_metric(gt, p):
   precision, recall, thresholds = precision_recall_curve(gt, p)
   return auc(recall, precision)
+
+# COMMAND ----------
+
+# MAGIC %md
+# MAGIC # Refresh tables
+
+# COMMAND ----------
+
+sql("refresh table solacc_ab_test.risk_stream_predictions")
+sql("refresh table solacc_ab_test.german_credit_data")
 
 # COMMAND ----------
 
