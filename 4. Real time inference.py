@@ -223,7 +223,7 @@ display(
 
 # COMMAND ----------
 
-minimum_number_records = 300
+minimum_number_records = 300 # users can set this number up to 400 based on our toy test data from notebook3
 while True:
   current_number_records = spark.read.table("solacc_ab_test.risk_stream_predictions").count()
   print("Number of records with predictions", current_number_records)
