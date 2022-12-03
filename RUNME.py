@@ -3,7 +3,7 @@
 # MAGIC 🎉
 # MAGIC 
 # MAGIC **Steps**
-# MAGIC 1. Simply attach this notebook to a cluster with DBR 11.0 and above, and hit Run-All for this notebook. A multi-task job and the clusters used in the job will be created for you and hyperlinks are printed on the last block of the notebook. 
+# MAGIC 1. Simply attach this notebook to a cluster and hit Run-All for this notebook. A multi-task job and the clusters used in the job will be created for you and hyperlinks are printed on the last block of the notebook. 
 # MAGIC 
 # MAGIC 2. Run the accelerator notebooks: Feel free to explore the multi-step job page and **run the Workflow**, or **run the notebooks interactively** with the cluster to see how this solution accelerator executes. 
 # MAGIC 
@@ -24,7 +24,7 @@
 # COMMAND ----------
 
 # DBTITLE 0,Install util packages
-# MAGIC %pip install git+https://github.com/databricks-academy/dbacademy@v1.0.13 git+https://github.com/databricks-industry-solutions/notebook-solution-companion@safe-print-html --quiet --disable-pip-version-check
+# MAGIC %pip install git+https://github.com/databricks-academy/dbacademy@v1.0.13 git+https://github.com/databricks-industry-solutions/notebook-solution-companion@reuse-dbsql --quiet --disable-pip-version-check
 
 # COMMAND ----------
 
@@ -118,8 +118,18 @@ job_json = {
 
 # COMMAND ----------
 
+spark.sql(f"CREATE DATABASE IF NOT EXISTS databricks_solacc LOCATION '/databricks_solacc/'")
+spark.sql(f"CREATE TABLE IF NOT EXISTS databricks_solacc.dbsql (path STRING, id STRING, solacc STRING)")
+dbsql_config_table = "databricks_solacc.dbsql"
+
+# COMMAND ----------
+
 dbutils.widgets.dropdown("run_job", "False", ["True", "False"])
 run_job = dbutils.widgets.get("run_job") == "True"
 nsc = NotebookSolutionCompanion()
 nsc.deploy_compute(job_json, run_job=run_job)
-nsc.deploy_dbsql("./risk_demo.dbdash")
+dashboard_id = nsc.deploy_dbsql("./risk_demo.dbdash", dbsql_config_table, spark)
+
+# COMMAND ----------
+
+
