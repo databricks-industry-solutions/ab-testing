@@ -1,9 +1,31 @@
 # Databricks notebook source
-# MAGIC %md This notebook series is also available at https://github.com/databricks-industry-solutions/ab-testing
+# MAGIC %md This notebook series is also available at https://github.com/databricks-industry-solutions/ab-testing.
 
 # COMMAND ----------
 
-# MAGIC %pip install mlflow>=1.29.0
+# MAGIC %pip install mlflow>=1.29.0 numpy>=1.23.4
+
+# COMMAND ----------
+
+# MAGIC %md
+# MAGIC ### Wait until there is data available to make predictions
+
+# COMMAND ----------
+
+import time
+# Check that the streaming table exists
+while True:
+  if spark._jsparkSession.catalog().tableExists("solacc_ab_test", "risk_stream_source"):
+    break
+  else:
+    time.sleep(1)
+
+minimum_number_records = 1
+while True:
+  if spark.read.table("solacc_ab_test.risk_stream_source").count() >= minimum_number_records:
+    break
+  else:
+    time.sleep(1)
 
 # COMMAND ----------
 
@@ -30,11 +52,6 @@
 # MAGIC Once we have registered our models we can see them in the MLflow UI. Note the version numbers of your models. In this case we will use versions 1 and 2, although for you these might be different. You can change this in the next cell.
 # MAGIC 
 # MAGIC <img src="https://github.com/sergioballesterossolanas/databricks-ab-testing/blob/master/img/model_versions.png?raw=true" width="1000"/>
-
-# COMMAND ----------
-
-import time
-time.sleep(60) # This notebook runs concurrently to notebook 3. Here we wait a minute for the stream in notebook 3 to process some records
 
 # COMMAND ----------
 
@@ -84,6 +101,8 @@ display(df)
 # MAGIC   .load()
 # MAGIC )
 # MAGIC ~~~
+# MAGIC 
+# MAGIC More info at https://docs.databricks.com/structured-streaming/kafka.html
 
 # COMMAND ----------
 
@@ -97,7 +116,16 @@ b_model_fraction = 0.5
 
 # COMMAND ----------
 
-df_with_split = df.withColumn("random_number", F.rand())
+import pandas as pd
+import numpy as np
+from pyspark.sql.functions import pandas_udf
+
+@pandas_udf('double')
+def pandas_random_number(s: pd.Series) -> pd.Series:
+    return s.apply(lambda x: np.random.uniform())
+
+df_with_split = df.withColumn("random_number", pandas_random_number("id"))
+  
 df_a = (
   df_with_split
   .where(F.col("random_number") >= b_model_fraction)
@@ -111,10 +139,6 @@ df_b = (
 )
 
 display(df_a.union(df_b))
-
-# COMMAND ----------
-
-df_a.union(df_b).groupby("group").count().display()
 
 # COMMAND ----------
 
@@ -140,7 +164,6 @@ df_pred_b = (
 )
 
 df_pred = df_pred_a.union(df_pred_b)
-display(df_pred)
 
 # COMMAND ----------
 
@@ -155,6 +178,9 @@ display(df_pred)
 # COMMAND ----------
 
 dbutils.fs.rm("/FileStore/tmp/streaming_ckpnt_risk_demo", recurse=True)
+
+# COMMAND ----------
+
 (
   df_pred
   .writeStream
@@ -192,6 +218,21 @@ display(
 
 # COMMAND ----------
 
-time.sleep(300) # enough time to process all records
+# MAGIC %md
+# MAGIC ### Gracefully stop the streams when most data points have predictions
+
+# COMMAND ----------
+
+minimum_number_records = 300 # users can set this number up to 400 based on our toy test data from notebook3
+while True:
+  current_number_records = spark.read.table("solacc_ab_test.risk_stream_predictions").count()
+  print("Number of records with predictions", current_number_records)
+  if current_number_records >= minimum_number_records:
+    break
+  else:
+    time.sleep(10)
+
 for s in spark.streams.active:
+  print("Stopping stream")
   s.stop()
+

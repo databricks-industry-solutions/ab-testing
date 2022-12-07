@@ -1,5 +1,5 @@
 # Databricks notebook source
-# MAGIC %md This notebook series is also available at https://github.com/databricks-industry-solutions/ab-testing
+# MAGIC %md This notebook series is also available at https://github.com/databricks-industry-solutions/ab-testing.
 
 # COMMAND ----------
 
@@ -13,10 +13,10 @@
 # MAGIC 
 # MAGIC <img src="https://ml-ops.org/img/mlops-loop-en.jpg" width="400"/>
 # MAGIC 
-# MAGIC This series of notebooks we will help you in doing A/B testing and detect model drift. More specifically you will learn:
+# MAGIC In this series of notebooks, we will demostrate the following:
 # MAGIC - How to do online inference in real time using Structured Streaming
 # MAGIC - How to do A/B testing with two machine learning models registered with MLflow
-# MAGIC - Detect model drift over time and visualize it with Databricks SQL
+# MAGIC - Detect model drift over time and visualize it with Databricks SQL Dashboard
 # MAGIC 
 # MAGIC We will use a toy dataset related to credit risk. See the next cell for more details.
 # MAGIC 

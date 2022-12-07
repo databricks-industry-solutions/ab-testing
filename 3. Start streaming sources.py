@@ -1,5 +1,5 @@
 # Databricks notebook source
-# MAGIC %md This notebook series is also available at https://github.com/databricks-industry-solutions/ab-testing
+# MAGIC %md This notebook series is also available at https://github.com/databricks-industry-solutions/ab-testing.
 
 # COMMAND ----------
 
@@ -18,6 +18,11 @@
 
 import time
 import numpy as np
+
+# COMMAND ----------
+
+# MAGIC %sql
+# MAGIC DROP TABLE IF EXISTS solacc_ab_test.risk_stream_source
 
 # COMMAND ----------
 
@@ -50,7 +55,6 @@ display(df)
 # COMMAND ----------
 
 for next_row in range(600, 1000):
-  time.sleep(np.random.uniform(0.1,0.4))
   print('Row inserted,', next_row)
   spark.sql(f"""
       INSERT INTO solacc_ab_test.risk_stream_source (
@@ -61,10 +65,13 @@ for next_row in range(600, 1000):
 
 # COMMAND ----------
 
-# MAGIC %md Now let's gracefully terminate the streaming queries.
+# MAGIC %md Now let's gracefully terminate the streaming queries after all rows are inserted.
 
 # COMMAND ----------
 
-time.sleep(300) # enough time for all records to be ingested
 for s in spark.streams.active:
   s.stop()
+
+# COMMAND ----------
+
+

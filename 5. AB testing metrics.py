@@ -1,5 +1,5 @@
 # Databricks notebook source
-# MAGIC %md This notebook series is also available at https://github.com/databricks-industry-solutions/ab-testing
+# MAGIC %md This notebook series is also available at https://github.com/databricks-industry-solutions/ab-testing.
 
 # COMMAND ----------
 
@@ -10,7 +10,7 @@
 # MAGIC <img src="https://github.com/sergioballesterossolanas/databricks-ab-testing/blob/master/img/arch_4.png?raw=true" width="1000"/>
 # MAGIC 
 # MAGIC 
-# MAGIC In this notebook we are going to compare the predictions with the actual responses for the models A and B over time. We will compute the Precision Recall AUC in 1 minute buckets.
+# MAGIC In this notebook, we are going to compare the predictions with the actual responses for the models A and B over time. We will compute the Precision Recall AUC in 1 minute buckets. We suggest users to start running this notebook a few minutes after the previous notebook4 has started running. If you are running this notebook manually, you can also click "run all" a few times to see the plot changes when more records (from notebook4) are avialble as time goes on.  
 # MAGIC 
 # MAGIC We will save these results in a Delta table so that we can read it from Databricks SQL. This will allow us to track the quality of both models over time and set up alerts when the quality of the models decrease over a certain threshold. This could be an input to retrain the models with fresher data. This process could be manual, but also could be easily automated by creating a job.
 # MAGIC 
@@ -19,8 +19,26 @@
 
 # COMMAND ----------
 
+spark.read.table("solacc_ab_test.risk_stream_predictions").display()
+
+# COMMAND ----------
+
 import time
-time.sleep(240) # this notebook needs to execute concurrently to notebook 3 and 4, but start a bit later than 4
+# Check that the streaming table exists
+while True:
+  if spark._jsparkSession.catalog().tableExists("solacc_ab_test", "risk_stream_predictions"):
+    break
+  else:
+    time.sleep(1)
+
+minimum_number_records = 230
+while True:
+  current_number_records = spark.read.table("solacc_ab_test.risk_stream_predictions").count()
+  print("Number of records with predictions", current_number_records)
+  if current_number_records >= minimum_number_records:
+    break
+  else:
+    time.sleep(10)
 
 # COMMAND ----------
 
@@ -50,6 +68,16 @@ import pyspark.sql.types as T
 def compute_metric(gt, p):
   precision, recall, thresholds = precision_recall_curve(gt, p)
   return auc(recall, precision)
+
+# COMMAND ----------
+
+# MAGIC %md
+# MAGIC # Refresh tables
+
+# COMMAND ----------
+
+sql("refresh table solacc_ab_test.risk_stream_predictions")
+sql("refresh table solacc_ab_test.german_credit_data")
 
 # COMMAND ----------
 
@@ -93,8 +121,8 @@ display(df_metrics)
 # COMMAND ----------
 
 import plotly.express as px
-pd1 = df_metrics.toPandas()
-fig = px.line(pd1.sort_values(by=['date_time'], ascending=[True]), x='date_time', y='pr_auc', line_group='group', color='group')
+pd1 = df_metrics.toPandas().sort_values(by=['date_time'], ascending=[True]).reset_index(drop=True)
+fig = px.line(pd1, x='date_time', y='pr_auc', line_group='group', color='group')
 fig
 
 # COMMAND ----------
@@ -186,8 +214,6 @@ df_pvalue  = spark.createDataFrame(data, T.StructType([
 
 # MAGIC %md
 # MAGIC ### Optional: create a dashboard on Databricks SQL 
-# MAGIC 
-# MAGIC DB internal workspace link: https://e2-demo-west.cloud.databricks.com/sql/dashboards/02566bf1-3ecd-4d63-b3ba-b6ccf859a530-risk-demo
 # MAGIC 
 # MAGIC <img src="https://github.com/sergioballesterossolanas/databricks-ab-testing/blob/master/img/sql_dashboard.png?raw=true" width="1300"/>
 

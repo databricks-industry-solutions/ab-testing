@@ -1,3 +1,4 @@
+
 # AB Testing Accelerator
 In any machine learning related project, training a model offline is just one part of the process. In 2020, we saw how the whole world quickly changed due to the pandemic. When working with data that represents the outside world is it important to keep in mind that models are going to have different accuracies over time because the data used for that training might no longer be representative, also known as model drift. Hence, it is important to track the real world accuracy over time. 
 
@@ -5,10 +6,10 @@ Moreover, training offline new models might or might not lead to better real wor
 
 <img src="https://ml-ops.org/img/mlops-loop-en.jpg" width="400"/>
 
-This series of notebooks we will demostrate the following:
+In this series of notebooks, we will demostrate the following:
 - How to do online inference in real time using Structured Streaming
 - How to do A/B testing with two machine learning models registered with MLflow
-- Detect model drift over time and visualize it with Databricks SQL
+- Detect model drift over time and visualize it with Databricks SQL Dashboard
 
 We will use a toy dataset related to credit risk. See the next cell for more details.
 
