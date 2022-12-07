@@ -3,7 +3,7 @@
 
 # COMMAND ----------
 
-# MAGIC %pip install mlflow>=1.29.0 pandas-profiling>=3.3.0
+# MAGIC %pip install 'mlflow>=1.29.0' 'pandas-profiling>=3.3.0'
 
 # COMMAND ----------
 
