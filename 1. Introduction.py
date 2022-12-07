@@ -5,9 +5,11 @@
 
 # MAGIC %md
 # MAGIC # Introduction
-# MAGIC In any machine learning related project, training a model offline is just one part of the process. In 2020, we saw how the whole world quickly changed due to the pandemic. When working with data that represents the outside world is it important to keep in mind that models are going to have different accuracies over time because the data used for that training might no longer be representative, also known as model drift. Hence, it is important to track the real world accuracy over time. 
+# MAGIC In any machine learning related project, training a model offline is just one part of the process. In 2020, we saw how the whole world quickly changed due to the pandemic. When working with data that represents the outside world it is important to keep in mind that models are going to have different accuracies over time because the data used for that training might no longer be representative, also known as model drift. Hence, it is important to track the real world accuracy over time. 
 # MAGIC 
-# MAGIC Moreover, training offline new models might or might not lead to better real world performance. This is why A/B testing can be a good technique to understand the effects of making changes to the systems that consume these machine learning models, and help us making data driven decisions.
+# MAGIC When this happens it is necessary to retrain the ML model to keep the accuracy high. This can be done by training the model with more recent data or an improved model. However, before replacing the older model in production, it is always a good to test live in a sample if the model actually performs better. Sometimes the accuracy of the predictions when working offline on a dataset might not reflect the accuracy of the model once it is live.
+# MAGIC 
+# MAGIC This is why A/B testing can be a good technique to understand the effects of making changes to the systems that consume these machine learning models, and help us making data driven decisions.
 # MAGIC 
 # MAGIC <img src="https://ml-ops.org/img/mlops-loop-en.jpg" width="400"/>
 # MAGIC 
@@ -49,6 +51,11 @@
 
 # MAGIC %sh
 # MAGIC wget "https://raw.githubusercontent.com/sergioballesterossolanas/databricks-ab-testing/master/german_credit_data.csv" -O /dbfs/tmp/german_credit_data.csv
+
+# COMMAND ----------
+
+# MAGIC %sh
+# MAGIC head /dbfs/tmp/german_credit_data.csv
 
 # COMMAND ----------
 

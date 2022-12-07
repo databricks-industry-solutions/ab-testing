@@ -3,7 +3,7 @@
 
 # COMMAND ----------
 
-# MAGIC %pip install mlflow==1.29.0 pandas-profiling==3.3.0
+# MAGIC %pip install mlflow>=1.29.0 pandas-profiling>=3.3.0
 
 # COMMAND ----------
 
@@ -26,7 +26,7 @@
 # MAGIC # Load libraries and set the MLflow experiment
 # MAGIC Please make sure that the following package is installed in your cluster (you can use the Maven repo coordinates):
 # MAGIC 
-# MAGIC org.mlflow:mlflow-spark:1.17.0
+# MAGIC org.mlflow:mlflow-spark:1.29.0
 
 # COMMAND ----------
 
@@ -43,7 +43,7 @@ from pandas_profiling import ProfileReport
 from pyspark.sql import SparkSession
 
 spark = (SparkSession.builder
-            .config("spark.jars.packages", "org.mlflow:mlflow-spark:1.17.0")
+            .config("spark.jars.packages", "org.mlflow:mlflow-spark:1.29.0")
             .master("local[*]")
             .getOrCreate())
 
@@ -111,7 +111,7 @@ displayHTML(profile_html)
 
 df_train, df_test = df.randomSplit(weights=[0.8, 0.2], seed=42)
 
-string_cols = ["sex", "housing", "saving_accounts", "checking_account", "purpose"]
+string_cols = ["saving_accounts", "checking_account", "purpose"]
 strings_cols_index = [i + " encoded" for i in string_cols]
 strings_cols_encoded = [i + " encoded" for i in strings_cols_index]
 
