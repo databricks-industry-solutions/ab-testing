@@ -30,9 +30,7 @@ import numpy as np
 # MAGIC CREATE TABLE solacc_ab_test.risk_stream_source
 # MAGIC   ( id INTEGER, 
 # MAGIC     age INTEGER,
-# MAGIC     sex STRING,
 # MAGIC     job INTEGER,
-# MAGIC     housing STRING,
 # MAGIC     saving_accounts STRING,
 # MAGIC     checking_account STRING,
 # MAGIC     credit_amount INTEGER,
@@ -58,7 +56,7 @@ for next_row in range(600, 1000):
   print('Row inserted,', next_row)
   spark.sql(f"""
       INSERT INTO solacc_ab_test.risk_stream_source (
-      SELECT id, age, sex, job, housing, saving_accounts, checking_account, credit_amount, duration, purpose FROM solacc_ab_test.german_credit_data
+      SELECT id, age, job, saving_accounts, checking_account, credit_amount, duration, purpose FROM solacc_ab_test.german_credit_data
       WHERE id = {next_row} )
   """)
   

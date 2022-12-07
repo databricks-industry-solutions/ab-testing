@@ -117,19 +117,23 @@ strings_cols_encoded = [i + " encoded" for i in strings_cols_index]
 
 str_indexer_label = StringIndexer(
   inputCol="risk",
-  outputCol="label"
+  outputCol="label",
+  handleInvalid="skip"
 )
 str_indexer = StringIndexer(
   inputCols=string_cols,
-  outputCols=strings_cols_index
+  outputCols=strings_cols_index,
+  handleInvalid="keep"
 )
 hot_encoder = OneHotEncoder(
   inputCols=strings_cols_index,
-  outputCols=strings_cols_encoded
+  outputCols=strings_cols_encoded,
+  handleInvalid="keep"
 )
 vector_assembler = VectorAssembler(
   inputCols=["age", "job", "duration", "credit_amount"] + strings_cols_encoded,
-  outputCol="features"
+  outputCol="features",
+  handleInvalid="keep"
 )
 
 # COMMAND ----------
