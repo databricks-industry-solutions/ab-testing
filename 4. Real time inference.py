@@ -7,6 +7,10 @@
 
 # COMMAND ----------
 
+dbutils.fs.rm("/FileStore/tmp/streaming_ckpnt_risk_demo", recurse=True)
+
+# COMMAND ----------
+
 # MAGIC %md
 # MAGIC ### Wait until there is data available to make predictions
 
@@ -55,11 +59,25 @@ while True:
 
 # COMMAND ----------
 
-import pyspark.sql.functions as F
+# Find automatically latest model versions
+
 import mlflow
 
-model_a_version = 1
-model_b_version = 2
+client = mlflow.MlflowClient()
+model_results = client.search_model_versions("name='german_credit'")
+assert len(model_results) > 1
+model_a_version = dict(model_results[1])["version"]
+model_b_version = dict(model_results[0])["version"]
+print("model A version", model_a_version)
+print("model B version", model_b_version)
+
+# COMMAND ----------
+
+import pyspark.sql.functions as F
+
+# Optionally manually choose the models to load
+# model_a_version = 1
+# model_b_version = 2
 model_name = "german_credit"
 
 model_a = mlflow.spark.load_model(
@@ -124,7 +142,7 @@ from pyspark.sql.functions import pandas_udf
 def pandas_random_number(s: pd.Series) -> pd.Series:
     return s.apply(lambda x: np.random.uniform())
 
-df_with_split = df.withColumn("random_number", pandas_random_number("id"))
+df_with_split = df.withColumn("random_number", pandas_random_number("id")).withColumn("risk", F.lit("good")) # this "risk" is a dummy value, will be ignored
   
 df_a = (
   df_with_split
@@ -177,7 +195,15 @@ df_pred = df_pred_a.union(df_pred_b)
 
 # COMMAND ----------
 
-dbutils.fs.rm("/FileStore/tmp/streaming_ckpnt_risk_demo", recurse=True)
+display(df_a)
+
+# COMMAND ----------
+
+model_a.stages
+
+# COMMAND ----------
+
+display(model_a.transform(df_a))
 
 # COMMAND ----------
 
@@ -235,4 +261,8 @@ while True:
 for s in spark.streams.active:
   print("Stopping stream")
   s.stop()
+
+
+# COMMAND ----------
+
 
